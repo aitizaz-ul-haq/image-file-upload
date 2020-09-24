@@ -21,7 +21,7 @@ const userSchema = mongoose.Schema({
            type: String,
            required: [true, 'why no passsword']
        },
-
+       
        productImage: {
            type: String,
            required: true

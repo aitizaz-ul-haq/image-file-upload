@@ -1,16 +1,20 @@
 const { User } = require("../models/user.model");
 
+
 //ADD a user to db
 const addUser = async (req, res) => {
   try {
+    console.log(req.file.path);
     console.log(req.file);
+    const filePath = req.file.path;
+    const filename = req.file.filename;
+    const server = "localhost" + process.env.PORT + "/"
     const { name, email, password } = req.body;
-
     const response = await User.create({
-      name: name, 
+      name: name,
       email: email,
       password: password,
-      productImage: file.path
+      productImage: server + filename,
     });
 
     return res.status(200).json({
@@ -45,80 +49,69 @@ const getUsers = async (req, res) => {
 
 //get user from db by ID
 const getUserById = async (req, res) => {
-    try {
-        
-        const id = req.params.id;
-        const response = await User.find({
-            _id: id,
-            productImage: productImage
-        });
+  try {
+    const id = req.params.id;
+    const response = await User.find({
+      _id: id,
+      productImage: productImage,
+    });
 
-        return res.status(200).json({
-          status: true,
-          data: response
-        })
-
-    } catch (error) {
-       return res.status(200).json({
-           status: false,
-           error: error.message,
-       });
-    }
+    return res.status(200).json({
+      status: true,
+      data: response,
+    });
+  } catch (error) {
+    return res.status(200).json({
+      status: false,
+      error: error.message,
+    });
+  }
 };
 
-//update user by ID 
+//update user by ID
 const updateUser = async (req, res) => {
-    try {
-        const id = req.params.id;
+  try {
+    const id = req.params.id;
 
-        const updateObj = req.body;
+    const updateObj = req.body;
 
-        await User.update({_id : id}, { $set: updateObj });
+    await User.update({ _id: id }, { $set: updateObj });
 
-        const response = await User.find({ _id: id });
+    const response = await User.find({ _id: id });
 
-        return res.status(200).json({
-            status: true,
-            data: response
-        });
-
-    } catch (error) {
-      return res.status(200).json({
-          status: false,
-          error: error.message
-      });  
-
-    }
+    return res.status(200).json({
+      status: true,
+      data: response,
+    });
+  } catch (error) {
+    return res.status(200).json({
+      status: false,
+      error: error.message,
+    });
+  }
 };
-
 
 //remove user from db
 
 const deleteUser = async (req, res) => {
-    try {
+  try {
+    const id = req.params.id;
 
-        const id = req.params.id;
+    await User.deleteOne({
+      _id: id,
+    });
 
-        await User.deleteOne({ 
-            _id: id,
-        })
-
-        return res.status(200).json({
-               status: true,
-               message: 'record deleted' 
-        })
-
-    } catch (error) { 
-        
-        return res.status(200).json({
-            status: false,
-            message: error.message
-
-        });
-
-    }
+    return res.status(200).json({
+      status: true,
+      message: "record deleted",
+    });
+  } catch (error) {
+    return res.status(200).json({
+      status: false,
+      message: error.message,
+    });
+  }
 };
-
 
 module.exports = {
   addUser,
@@ -126,22 +119,4 @@ module.exports = {
   getUserById,
   updateUser,
   deleteUser,
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+};
